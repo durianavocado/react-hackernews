@@ -6,27 +6,42 @@ import "./styles.css";
 const list = [
   {
     id: 1,
-    name: 'How to tame the husband',
-    author: 'Hang Nguyen'
+    name: "How to tame the husband",
+    author: "Hang Nguyen"
   },
   {
     id: 2,
-    name: 'How to listen to the wife',
-    author: 'Truong Nguyen'
+    name: "How to listen to the wife",
+    author: "Truong Nguyen"
+  },
+  {
+    id: 3,
+    name: "How to eat fast",
+    author: ""
   }
-]
+];
 
 class App extends React.Component {
   constructor() {
     super();
-    this.state = { list };
+    this.state = { list, searchText: "" };
+    this.onSearchChange = this.onSearchChange.bind(this);
+    this.filterItem = this.filterItem.bind(this);
   }
 
-  onDelete(thisItem) {
-    const newList = this.state.list.filter(
-      item => thisItem.id !== item.id
-    );
+  filterItem(item) {
+    return item.name
+      .toLowerCase()
+      .includes(this.state.searchText.toLowerCase());
+  }
+
+  deleteItem(thisItem) {
+    const newList = this.state.list.filter(item => thisItem.id !== item.id);
     this.setState({ list: newList });
+  }
+
+  onSearchChange(event) {
+    this.setState({ searchText: event.target.value });
   }
 
   render() {
@@ -34,14 +49,16 @@ class App extends React.Component {
     return (
       <div className="App">
         <h1>Book List</h1>
-        {
-          list.map(item =>
-            <div key={item.id}>
-              <span>{item.name}</span>
-              <span>{item.author}</span>
-              <button onClick={() => this.onDelete(item)}>Delete</button>
-            </div>)
-        }
+        <form>
+          <input type="text" onChange={this.onSearchChange} />
+        </form>
+        {list.filter(this.filterItem).map(item => (
+          <div key={item.id}>
+            <span>{item.name} - </span>
+            <span>{item.author || "<unknown>"}</span>
+            <button onClick={() => this.deleteItem(item)}>Delete</button>
+          </div>
+        ))}
       </div>
     );
   }
