@@ -21,6 +21,10 @@ const list = [
   }
 ];
 
+function filterWithText(searchText) {
+  return item => item.name.toLowerCase().includes(searchText.toLowerCase());
+}
+
 class App extends React.Component {
   constructor() {
     super();
@@ -45,14 +49,14 @@ class App extends React.Component {
   }
 
   render() {
-    const { list } = this.state;
+    const { list, searchText } = this.state;
     return (
       <div className="App">
         <h1>Book List</h1>
         <form>
           <input type="text" onChange={this.onSearchChange} />
         </form>
-        {list.filter(this.filterItem).map(item => (
+        {list.filter(filterWithText(searchText)).map(item => (
           <div key={item.id}>
             <span>{item.name} - </span>
             <span>{item.author || "<unknown>"}</span>
